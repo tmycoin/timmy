@@ -14,6 +14,8 @@
 
 ##### Socials
 
+**Telegram:** [tmycoin](https://t.me/timycoin)
+
 **Twitter:** [tmycoin](https://www.twitter.com/tmycoin)
 
 **Instagram:** [tmycoin](https://www.instagram.com/tmycoin)
