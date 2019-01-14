@@ -70,7 +70,7 @@ In VS' Solution Explorer select upnpc-static' Properies -> C/C++ -> Code Generat
 
 ```C
 const char* const SEED_NODES[] = {
-  "node-1.timmycoin.net:1302",
-  "node-2.timmycoin.net:1302",
+  "timmy-1.timmycoin.net:1302",
+  "timmy-2.timmycoin.net:1302",
 };
 ```
