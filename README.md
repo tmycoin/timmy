@@ -12,7 +12,7 @@
 
 **BitcoinTalk:** [BitcoinTalk](https://---)
 
-##### Socials
+### Socials
 
 **Telegram:** [tmycoin](https://t.me/timycoin)
 
