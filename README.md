@@ -82,3 +82,7 @@ const char* const SEED_NODES[] = {
   "timmy-2.timmycoin.net:1302",
 };
 ```
+
+#### Offical TMY WALLET:
+
+    9Jxgz7zacYtAcx7kXFLYeSgG3VrjCSVKBP2Nzc88YY7rWxtTz4zksyNYGMWLZ4tLV7hVy9hRDf69XZ5qvnSCUUsZPqb7DNQ
