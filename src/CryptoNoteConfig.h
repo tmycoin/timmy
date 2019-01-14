@@ -9,7 +9,7 @@ const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
-const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 0xf5; // addresses start with "h"
+const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 0x31; // addresses start with "t"
 const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 6;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 500;
 
@@ -29,7 +29,7 @@ const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = 100000;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE        = 600;
 const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
-const uint64_t MINIMUM_FEE                                   = 100000; // for now Minimum fee would be 0.001 PARS for a while 
+const uint64_t MINIMUM_FEE                                   = 100000; // for now Minimum fee would be 0.001 TMY for a while
 const uint64_t DEFAULT_DUST_THRESHOLD                        = 100000000;
 const uint64_t MAX_TX_MIXIN_SIZE                             = 20;
 const uint64_t MAX_TRANSACTION_SIZE_LIMIT                    = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 / 4 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;
@@ -75,8 +75,8 @@ const char     CRYPTONOTE_BLOCKCHAIN_INDICES_FILENAME[]      = "blockchainindice
 const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json";
 } // parameters
 
-const char     CRYPTONOTE_NAME[]                             = "parsicoin";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "010601ff0001e08785bcd72f029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121019896bb8cf57b63bf7f645844f57865ecbf38822b86cf67e2dae4bf1d8fb0a8b5";
+const char     CRYPTONOTE_NAME[]                             = "timmycoin";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010601ff0001e08785bcd72f029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101bf9a493dd1a4cec2e90215f4110c841561e8c6f6d7751c2685816941b571c139";
 
 const uint8_t  CURRENT_TRANSACTION_VERSION                   =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
@@ -113,9 +113,9 @@ const uint32_t P2P_IDLE_CONNECTION_KILL_INTERVAL             = (5 * 60);      //
 
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "8f80f9a5a434a9f1510d13336228debfee9c918ce505efe225d8c94d045fa115";
 
-const char* const SEED_NODES[] = { 
-  "node.parsicoin.net:17230",
-  "explorer.parsicoin.net:17230",
+const char* const SEED_NODES[] = {
+  "timmy-1.timmycoin.net:17230",
+  "timmy-2.timmycoin.net:17230",
 };
 
 struct CheckpointData {
@@ -123,21 +123,10 @@ struct CheckpointData {
   const char* blockId;
 };
 
-const std::initializer_list<CheckpointData> CHECKPOINTS = { 
-  {1,	"c4ba8a1e242cf230c77f9dd5be19cce872e894b9c9fcf23a6af8e20cee82a092" },
-  {20000,	"6c2c66c328d892caff8c97f61c7876a4af130c41ba8ea035315126d81a87f6c4" },
-  {40000,	"c7ba936826afe2369423983def0e1c628ff3f2784184010c1c37bcb170dad805" },
-  {60000,	"a474549507c89601b13df91be975aa35e178243e3f33df59895ed9aa248d4cbf" },
-  {80000,	"17ca665bc8ff6167236b8b3fb5c96196246dd0c1a5c55b58e878322ce4cc6427" },
-  {100000,  "062c72c1aff09213a8ba7a7c8ff3830cff01da414a30f281135984b596235296" },
-  {120000,  "4732064b59ca2aeeb7cb9339ce307268be3485a11617eed6de4745087abcb623" },
-  {140000,  "25898159bf209d441e1c9acec678cfa901de73e0d9208d5fc8a3e3267cee2c3b" },
-  {160000,  "d84a21a334f1d98010bd326efc29b2737457a5768326f742219c8d155a9beeeb" },
-  {180000,  "503d441f3b99c415f06bf32c7dd77b8bc03b1f47a40a4e2022435cd74f01012a" },
-  {200000,  "bc8c39add1b3aeaf2b80c372c883ceb5991b211ac86a9c6aeb0ae7e03a283df4" },
+const std::initializer_list<CheckpointData> CHECKPOINTS = {
+  // { 1,	"c4ba8a1e242cf230c77f9dd5be19cce872e894b9c9fcf23a6af8e20cee82a092" }
 };
 
 } // CryptoNote
 
 #define ALLOW_DEBUG_COMMANDS
-

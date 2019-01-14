@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2012-2016, The Parsicoin developers
+// Copyright (c) 2012-2016, The Parsicoin developers, Timmycoin developers
 //
 // Bytecoin is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by

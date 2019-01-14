@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2018, The CryptoNote developers, The Bytecoin developers, The Karbowanec developers, The Parsicoin developers
+// Copyright (c) 2012-2018, The CryptoNote developers, The Bytecoin developers, The Karbowanec developers, The Parsicoin developers, Timmycoin developers
 //
 // This file is part of Bytecoin.
 //

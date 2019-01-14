@@ -1,7 +1,8 @@
 // Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Forknote project
 // Copyright (c) 2016-2018, The Karbowanec developers
-// Copyright (c) 2018, The Parsicoin developers
+// Copyright (c) 2018, The Parsicoin developers, Timmycoin developers
+// Copyright (c) 2019, The Timmycoin developers
 // This file is part of Bytecoin.
 //
 // Bytecoin is free software: you can redistribute it and/or modify

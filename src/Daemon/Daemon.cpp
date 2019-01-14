@@ -1,7 +1,7 @@
 // Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2016, The Forknote developers
 // Copyright (c) 2016, The Karbowanec developers
-// Copyright (c) 2018 The Parsicoin developers
+// Copyright (c) 2018 The Parsicoin developers, Timmycoin developers
 // This file is part of Bytecoin.
 // Bytecoin is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
 
     if (!r)
       return 1;
-  
+
     auto modulePath = Common::NativePathToGeneric(argv[0]);
     auto cfgLogFile = Common::NativePathToGeneric(command_line::get_arg(vm, arg_log_file));
 
@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
     if (command_line_preprocessor(vm, logger)) {
       return 0;
     }
-	
+
 	std::string contact_str = command_line::get_arg(vm, arg_set_contact);
     if (!contact_str.empty() && contact_str.size() > 128) {
       logger(ERROR, BRIGHT_RED) << "Too long contact info";
@@ -208,11 +208,13 @@ int main(int argc, char* argv[])
 
 {
     std::cout << R"(
-
-   _ \               _)  ___|      _)       
-  |   | _` |  __| __| | |      _ \  | __ \  
-  ___/ (   | |  \__ \ | |     (   | | |   | 
- _|   \__,_|_|  ____/_|\____|\___/ _|_|  _| (PARS)
+      
+___________.__                                   .__
+\__    ___/|__| _____   _____ ___.__. ____  ____ |__| ____
+  |    |   |  |/     \ /     <   |  |/ ___\/  _ \|  |/    \
+  |    |   |  |  Y Y  \  Y Y  \___  \  \__(  <_> )  |   |  \
+  |____|   |__|__|_|  /__|_|  / ____|\___  >____/|__|___|  /
+                    \/      \/\/         \/              \/ (TMY)
 )" << '\n';
 
 }
@@ -297,7 +299,7 @@ int main(int argc, char* argv[])
       return 1;
     }
     logger(INFO) << "Core initialized OK";
-	
+
 	if (command_line::has_arg(vm, arg_rollback)) {
       std::string rollback_str = command_line::get_arg(vm, arg_rollback);
       if (!rollback_str.empty()) {
