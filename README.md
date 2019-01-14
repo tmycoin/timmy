@@ -12,6 +12,12 @@
 
 **BitcoinTalk:** [BitcoinTalk](https://---)
 
+##### Socials
+
+**Twitter:** [tmycoin](https://www.twitter.com/tmycoin)
+
+**Instagram:** [tmycoin](https://www.instagram.com/tmycoin)
+
 _____
 
 #### Build instructions
