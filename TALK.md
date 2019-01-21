@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/tmycoin/timmy/blob/master/tmy.png" />
+  <img src="https://github.com/tmycoin/timmy/blob/master/logo.png" />
 </p>
 
 **About Timmycoin (TMY)**
