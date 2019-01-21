@@ -14,7 +14,7 @@
 
 **Roadmap:** [Roadmap](https://www.timmycoin.net/roadmap)
 
-**BitcoinTalk:** [BitcoinTalk](https://---)
+**BitcoinTalk:** [BitcoinTalk](https://bitcointalk.org/index.php?topic=5100223)
 
 ### Socials
 
