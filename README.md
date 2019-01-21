@@ -1,5 +1,9 @@
 ## Timmycoin (TMY)
 
+<p align="center">
+  <img src="https://github.com/tmycoin/timmy/blob/master/logo.png" />
+</p>
+
 > Based on CryptoNote Technology Timmycoin (TMY) COIN
 
 **Website:** [www.timmycoin.net](https://www.timmycoin.net)
