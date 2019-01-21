@@ -17,7 +17,7 @@ Everyone can contribute, participate in the issue of **TMY** `(mining)` with reg
 **Specifications**
 * Name: **Timmycoin** 
 * Symbol: **TMY** 
-* Algorithm: **CryptoNight** 
+* Algorithm: **CryptoNight Classic ASIC Friendly** 
 * Block Time: **120 Seconds**  
 * Money supply: **8,589,869,056 TMY**  
 * Address Prefix: **0x31 (Address Start with "t")**  
