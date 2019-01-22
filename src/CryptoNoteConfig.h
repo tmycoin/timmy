@@ -58,9 +58,9 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 // Newer Change lwma, cnv7
-const uint32_t UPGRADE_HEIGHT_V2                             = 9999999; // Diff algo Change from cryptonote default to lwma
-const uint32_t UPGRADE_HEIGHT_V3                             = 99999999; // POW algo Change from cryptonote default to cnv7 Anti ASIC
-const uint32_t UPGRADE_HEIGHT_V4                             = 999999999; // Block Size Changed to 1mb
+const uint32_t UPGRADE_HEIGHT_V2                             = 1390065405; // Diff algo Change from cryptonote default to lwma
+const uint32_t UPGRADE_HEIGHT_V3                             = 1400065406; // POW algo Change from cryptonote default to cnv7 Anti ASIC
+const uint32_t UPGRADE_HEIGHT_V4                             = 1410065407; // Block Size Changed to 1mb
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
