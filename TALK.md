@@ -32,9 +32,11 @@ Everyone can contribute, participate in the issue of **TMY** `(mining)` with reg
 * Web Wallet : http://wallet.timmycoin.net
 * Source Codes : https://github.com/tmycoin/timmy
 * All Downloads : https://timmycoin.net/downloads
+* Android Mobile : https://play.google.com/store/apps/details?id=com.timmycoin
 
 **Mining Pools**
 * https://cnpool.cc/tmy (0.1% fee)
+* http://tmy.cryptonote.club (0% fee)
 * http://youpool.io/TMY (0.1% fee)
 
 **Exchanges**
