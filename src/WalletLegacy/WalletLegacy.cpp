@@ -32,11 +32,13 @@
 #include <string.h>
 #include <time.h>
 
+#include <Common/Base58.h>
 #include "Logging/ConsoleLogger.h"
 #include "WalletLegacy/WalletHelper.h"
 #include "WalletLegacy/WalletLegacySerialization.h"
 #include "WalletLegacy/WalletLegacySerializer.h"
 #include "WalletLegacy/WalletUtils.h"
+#include "Common/StringTools.h"
 #include "mnemonics/electrum-words.h"
 
 extern "C"
@@ -106,6 +108,8 @@ private:
 };
 
 } //namespace
+
+using namespace Logging;
 
 namespace CryptoNote {
 
@@ -286,6 +290,18 @@ void WalletLegacy::doLoad(std::istream& source) {
     } catch (const std::exception&) {
       // ignore cache loading errors
     }
+	
+	// Read all output keys cache
+    std::vector<TransactionOutputInformation> allTransfers;
+    m_transferDetails->getOutputs(allTransfers, ITransfersContainer::IncludeAll);
+    auto message = "Loaded " + std::to_string(allTransfers.size()) + " known transfer(s)\r\n";
+    m_loggerGroup("WalletLegacy", INFO, boost::posix_time::second_clock::local_time(), message);
+    for (auto& o : allTransfers) {
+      if (o.type == TransactionTypes::OutputType::Key) {
+        m_transfersSync.addPublicKeysSeen(m_account.getAccountKeys().address, o.transactionHash, o.outputKey);
+      }
+    }
+	
   } catch (std::system_error& e) {
     runAtomic(m_cacheMutex, [this] () {this->m_state = WalletLegacy::NOT_INITIALIZED;} );
     m_observerManager.notify(&IWalletLegacyObserver::initCompleted, e.code());
@@ -449,6 +465,10 @@ std::string WalletLegacy::getAddress() {
   return m_currency.accountAddressAsString(m_account);
 }
 
+std::vector<Payments> WalletLegacy::getTransactionsByPaymentIds(const std::vector<PaymentId>& paymentIds) const {
+  return m_transactionsCache.getTransactionsByPaymentIds(paymentIds);
+}
+
 uint64_t WalletLegacy::actualBalance() {
   std::unique_lock<std::mutex> lock(m_cacheMutex);
   throwIfNotInitialised();
@@ -519,6 +539,12 @@ bool WalletLegacy::getTransfer(TransferId transferId, WalletLegacyTransfer& tran
   throwIfNotInitialised();
 
   return m_transactionsCache.getTransfer(transferId, transfer);
+}
+
+size_t WalletLegacy::getUnlockedOutputsCount() {
+  std::vector<TransactionOutputInformation> outputs;
+  m_transferDetails->getOutputs(outputs, ITransfersContainer::IncludeKeyUnlocked);
+  return outputs.size();
 }
 
 TransactionId WalletLegacy::sendTransaction(const WalletLegacyTransfer& transfer, uint64_t fee, const std::string& extra, uint64_t mixIn, uint64_t unlockTimestamp) {
@@ -730,5 +756,97 @@ std::vector<TransactionId> WalletLegacy::deleteOutdatedUnconfirmedTransactions()
   std::lock_guard<std::mutex> lock(m_cacheMutex);
   return m_transactionsCache.deleteOutdatedTransactions();
 }
+
+Crypto::SecretKey WalletLegacy::getTxKey(Crypto::Hash& txid) {
+  TransactionId ti = m_transactionsCache.findTransactionByHash(txid);
+  WalletLegacyTransaction transaction;
+  getTransaction(ti, transaction);
+  if (transaction.secretKey) {
+     return reinterpret_cast<const Crypto::SecretKey&>(transaction.secretKey.get());
+  } else {
+     return NULL_SECRET_KEY;
+  }
+}
+
+bool WalletLegacy::getTxProof(Crypto::Hash& txid, CryptoNote::AccountPublicAddress& address, std::string& tx_key, std::string& sig_str) {
+  //SecretKey txKey = *reinterpret_cast<const Crypto::SecretKey*>(tx_key.data());
+  Crypto::Hash tx_key_hash;
+  size_t size;
+  if (!Common::fromHex(tx_key, &tx_key_hash, sizeof(tx_key_hash), size) || size != sizeof(tx_key_hash))
+	  return false;
+  SecretKey txKey = *(struct Crypto::SecretKey *) &tx_key_hash;
+  Crypto::KeyImage p = *reinterpret_cast<Crypto::KeyImage*>(&address.viewPublicKey);
+  Crypto::KeyImage k = *reinterpret_cast<Crypto::KeyImage*>(&txKey);
+  Crypto::KeyImage pk = Crypto::scalarmultKey(p, k);
+  Crypto::PublicKey R;
+  Crypto::PublicKey rA = reinterpret_cast<const PublicKey&>(pk);
+  Crypto::secret_key_to_public_key(txKey, R);
+  Crypto::Signature sig;
+  try
+  {
+    Crypto::generate_tx_proof(txid, R, address.viewPublicKey, rA, txKey, sig);
+  }
+  catch (const std::runtime_error &e)
+  {
+    std::cout << "Proof generation error: " << e.what();
+    return false;
+  }
+
+  sig_str = std::string("ProofV1") +
+    Tools::Base58::encode(std::string((const char *)&rA, sizeof(Crypto::PublicKey))) +
+    Tools::Base58::encode(std::string((const char *)&sig, sizeof(Crypto::Signature)));
+
+  return true;
+}
+
+bool WalletLegacy::checkTxProof(Crypto::Hash& txid, CryptoNote::AccountPublicAddress& address, std::string& sig_str) {
+  const size_t header_len = strlen("ProofV1");
+  if (sig_str.size() < header_len || sig_str.substr(0, header_len) != "ProofV1")
+  {
+	std::cout << "Signature header check error";
+    return false;
+  }
+  Crypto::PublicKey rA;
+  Crypto::Signature sig;
+  const size_t rA_len = Tools::Base58::encode(std::string((const char *)&rA, sizeof(Crypto::PublicKey))).size();
+  const size_t sig_len = Tools::Base58::encode(std::string((const char *)&sig, sizeof(Crypto::Signature))).size();
+  std::string rA_decoded;
+  std::string sig_decoded;
+  if (!Tools::Base58::decode(sig_str.substr(header_len, rA_len), rA_decoded)) {
+    std::cout << "Signature decoding error";
+	return false;
+  }
+  if (!Tools::Base58::decode(sig_str.substr(header_len + rA_len, sig_len), sig_decoded))
+  {
+    std::cout << "Signature decoding error";
+    return false;
+  }
+  if (sizeof(Crypto::PublicKey) != rA_decoded.size() || sizeof(Crypto::Signature) != sig_decoded.size())
+  {
+    std::cout << "Signature decoding error";
+    return false;
+  }
+  memcpy(&rA, rA_decoded.data(), sizeof(Crypto::PublicKey));
+  memcpy(&sig, sig_decoded.data(), sizeof(Crypto::PublicKey));
+
+  // fetch tx pubkey
+  TransactionId ti = m_transactionsCache.findTransactionByHash(txid);
+  WalletLegacyTransaction tx;
+  if (!getTransaction(ti, tx)) {
+    std::cout << "Transaction with hash " << Common::podToHex(txid) << "is not found";
+	return false;
+  }
+  CryptoNote::TransactionPrefix txp = *reinterpret_cast<const TransactionPrefix*>(&tx);
+  Crypto::PublicKey R = getTransactionPublicKeyFromExtra(txp.extra);
+  if (R == NULL_PUBLIC_KEY)
+  {
+    std::cout << "Tx pubkey was not found";
+    return false;
+  }
+
+  // check signature
+  return Crypto::check_tx_proof(txid, R, address.viewPublicKey, rA, sig);
+}
+
 
 } //namespace CryptoNote

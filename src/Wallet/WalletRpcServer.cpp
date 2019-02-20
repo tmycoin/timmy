@@ -22,6 +22,7 @@
 #include "Common/CommandLine.h"
 #include "Common/StringTools.h"
 #include "CryptoNoteCore/CryptoNoteFormatUtils.h"
+#include "CryptoNoteCore/CryptoNoteBasicImpl.h"
 #include "CryptoNoteCore/Account.h"
 #include "Rpc/JsonRpc.h"
 #include "WalletLegacy/WalletHelper.h"
@@ -43,7 +44,7 @@ const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_user 
 	{ "rpc-user"     , "Username to use with the RPC server. If empty, no server authorization will be done.", "" };
 const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_password = 
 	{ "rpc-password" , "Password to use with the RPC server. If empty, no server authorization will be done.", "" };
-
+	
 void wallet_rpc_server::init_options(boost::program_options::options_description& desc)
 {
 	command_line::add_arg(desc, arg_rpc_bind_ip);
@@ -97,7 +98,7 @@ bool wallet_rpc_server::handle_command_line(const boost::program_options::variab
 	m_bind_ip	  = command_line::get_arg(vm, arg_rpc_bind_ip);
 	m_port		  = command_line::get_arg(vm, arg_rpc_bind_port);
 	m_rpcUser	  = command_line::get_arg(vm, arg_rpc_user);
-	m_rpcPassword = command_line::get_arg(vm, arg_rpc_password);  
+	m_rpcPassword = command_line::get_arg(vm, arg_rpc_password); 
 	return true;
 }
 //------------------------------------------------------------------------------------------------------------------------------
@@ -138,6 +139,7 @@ void wallet_rpc_server::processRequest(const CryptoNote::HttpRequest& request, C
 			{ "query_key"      , makeMemberMethod(&wallet_rpc_server::on_query_key)		  },
 			{ "reset"		   , makeMemberMethod(&wallet_rpc_server::on_reset)			  },
 			{ "get_paymentid"  , makeMemberMethod(&wallet_rpc_server::on_gen_paymentid)	  },
+			{ "get_tx_key"     , makeMemberMethod(&wallet_rpc_server::on_get_tx_key)	  },
 			{ "change_password"  , makeMemberMethod(&wallet_rpc_server::on_change_password)   },
 		};
 
@@ -223,6 +225,7 @@ bool wallet_rpc_server::on_transfer(const wallet_rpc::COMMAND_RPC_TRANSFER::requ
 		CryptoNote::WalletLegacyTransaction txInfo;
 		m_wallet.getTransaction(tx, txInfo);
 		res.tx_hash = Common::podToHex(txInfo.hash);
+		res.tx_key = Common::podToHex(txInfo.secretKey);
 
 	}
 	catch (const std::exception& e)
@@ -337,6 +340,7 @@ bool wallet_rpc_server::on_get_transfers(const wallet_rpc::COMMAND_RPC_GET_TRANS
 
 		Crypto::Hash paymentId;
 		transfer.paymentId = (getPaymentIdFromTxExtra(extraVec, paymentId) && paymentId != NULL_HASH ? Common::podToHex(paymentId) : "");
+		transfer.txKey = (txInfo.secretKey != NULL_SECRET_KEY ? Common::podToHex(txInfo.secretKey) : "");
 
 		res.transfers.push_back(transfer);
 	}
@@ -392,6 +396,8 @@ bool wallet_rpc_server::on_get_transaction(const wallet_rpc::COMMAND_RPC_GET_TRA
 
 			Crypto::Hash paymentId;
 			transfer.paymentId = (getPaymentIdFromTxExtra(extraVec, paymentId) && paymentId != NULL_HASH ? Common::podToHex(paymentId) : "");
+			
+			transfer.txKey = (txInfo.secretKey != NULL_SECRET_KEY ? Common::podToHex(txInfo.secretKey) : "");
 
 			res.transaction_details = transfer;
 
@@ -466,8 +472,7 @@ bool wallet_rpc_server::on_stop_wallet(const wallet_rpc::COMMAND_RPC_STOP::reque
 //------------------------------------------------------------------------------------------------------------------------------
 
 bool wallet_rpc_server::on_gen_paymentid(const wallet_rpc::COMMAND_RPC_GEN_PAYMENT_ID::request& req,
-	wallet_rpc::COMMAND_RPC_GEN_PAYMENT_ID::response& res)
-{
+	wallet_rpc::COMMAND_RPC_GEN_PAYMENT_ID::response& res) {
 	std::string pid;
 	try {
 		pid = Common::podToHex(Crypto::rand<Crypto::Hash>());
@@ -476,6 +481,23 @@ bool wallet_rpc_server::on_gen_paymentid(const wallet_rpc::COMMAND_RPC_GEN_PAYME
 		throw JsonRpc::JsonRpcError(WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR, std::string("Internal error: can't generate Payment ID: ") + e.what());
 	}
 	res.payment_id = pid;
+	return true;
+}
+
+bool wallet_rpc_server::on_get_tx_key(const wallet_rpc::COMMAND_RPC_GET_TX_KEY::request& req,
+	wallet_rpc::COMMAND_RPC_GET_TX_KEY::response& res) {
+	Crypto::Hash txid;
+	if (!parse_hash256(req.tx_hash, txid)) {
+		throw JsonRpc::JsonRpcError(WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR, std::string("Failed to parse txid"));
+	}
+
+	Crypto::SecretKey tx_key = m_wallet.getTxKey(txid);
+	if (tx_key != NULL_SECRET_KEY) {
+		res.tx_key = Common::podToHex(tx_key);
+	}
+	else {
+		throw JsonRpc::JsonRpcError(WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR, std::string("No tx key found for this txid"));
+	}
 	return true;
 }
 

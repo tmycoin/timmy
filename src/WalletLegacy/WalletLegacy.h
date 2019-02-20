@@ -90,11 +90,13 @@ public:
 
   virtual size_t getTransactionCount() override;
   virtual size_t getTransferCount() override;
+  virtual size_t getUnlockedOutputsCount() override;
 
   virtual TransactionId findTransactionByTransferId(TransferId transferId) override;
 
   virtual bool getTransaction(TransactionId transactionId, WalletLegacyTransaction& transaction) override;
   virtual bool getTransfer(TransferId transferId, WalletLegacyTransfer& transfer) override;
+  virtual std::vector<Payments> getTransactionsByPaymentIds(const std::vector<PaymentId>& paymentIds) const override;
 
   virtual TransactionId sendTransaction(const WalletLegacyTransfer& transfer, uint64_t fee, const std::string& extra = "", uint64_t mixIn = 0, uint64_t unlockTimestamp = 0) override;
   virtual TransactionId sendTransaction(const std::vector<WalletLegacyTransfer>& transfers, uint64_t fee, const std::string& extra = "", uint64_t mixIn = 0, uint64_t unlockTimestamp = 0) override;
@@ -104,6 +106,10 @@ public:
 
   virtual void getAccountKeys(AccountKeys& keys) override;
   virtual bool getSeed(std::string& electrum_words) override;
+  
+  virtual Crypto::SecretKey getTxKey(Crypto::Hash& txid) override;
+  virtual bool getTxProof(Crypto::Hash& txid, CryptoNote::AccountPublicAddress& address, std::string& tx_key, std::string& sig_str) override;
+  virtual bool checkTxProof(Crypto::Hash& txid, CryptoNote::AccountPublicAddress& address, std::string& sig_str) override;
 
 private:
 

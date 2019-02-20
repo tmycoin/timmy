@@ -49,7 +49,7 @@ void Configuration::initOptions(boost::program_options::options_description& des
       ("bind-address", po::value<std::string>()->default_value("127.0.0.1"), "payment service bind address")
       ("bind-port", po::value<uint16_t>()->default_value(8070), "payment service bind port")
       ("rpc-user", po::value<std::string>(), "Username to use with the RPC server. If empty, no server authorization will be done")
-      ("rpc-password", po::value<std::string>(), "Password to use with the RPC server. If empty, no server authorization will be done")
+	  ("rpc-password", po::value<std::string>(), "Password to use with the RPC server. If empty, no server authorization will be done")
       ("container-file,w", po::value<std::string>(), "container file")
       ("container-password,p", po::value<std::string>(), "container password")
       ("generate-container,g", "generate new container file with one wallet and exit")
@@ -144,6 +144,7 @@ void Configuration::init(const boost::program_options::variables_map& options) {
 	}
 
   }
+  
 }
 
 } //namespace PaymentService
