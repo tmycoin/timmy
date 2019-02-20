@@ -1,7 +1,7 @@
 ## Timmycoin (TMY)
 
 <p align="center">
-  <img src="https://github.com/tmycoin/timmy/blob/master/logo.png" width="100" />
+  <img src="https://github.com/tmycoin/timmy/blob/master/logo.png" width="250" />
 </p>
 
 > Based on CryptoNote Technology Timmycoin (TMY) COIN
