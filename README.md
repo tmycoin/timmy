@@ -59,19 +59,29 @@ Build Timmy
 **Test suite:** run `make test-release` to run tests in addition to building. Running `make test-debug` will do the same to the debug version.
 
 
-### On Windows:
+## On Windows:
 
-##### Dependencies: MSVC 2013 or later, CMake 2.8.6 or later, and Boost 1.55 or later. You may download them from:
+### Dependencies
 
-http://www.microsoft.com/
+* MSVC 2013 or later
+* CMake 2.8.6 or later, 
+* Download [boost_1_65_1-msvc-14.1-64](https://netix.dl.sourceforge.net/project/boost/boost-binaries/1.65.1/boost_1_65_1-msvc-14.1-64.exe) and install to `C:\local\boost_1_65_1` directory.
 
-http://www.cmake.org/
 
-http://www.boost.org/
 
 ##### To build, change to a directory where this file is located, and run this commands: (VisualStudio 2015)
 
-    mkdir build && cd build && cmake .. -G "Visual Studio 14 Win64" ..
+and add variables 
+
+    BOOST_LIBRARYDIR=C:\local\boost_1_65_1\lib64-msvc-14.1
+    BOOST_ROOT=C:\local\boost_1_65_1
+
+clone and build
+
+    git clone https://github.com/tmycoin/timmy.git
+    cd timmy
+    cd build
+    cmake .. -G "Visual Studio 15 2017 Win64" ..
 
 then open **Timmycoin.sln** File on Visual Studio
 
